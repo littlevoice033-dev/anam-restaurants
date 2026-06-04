@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>고려대 안암 맛집 추천 리스트</title>
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --card: #fff;
+      --text: #1a1d26;
+      --muted: #5c6370;
+      --accent: #8b1538;
+      --accent-light: #fdf2f4;
+      --border: #e5e8ef;
+      --gold: #b8860b;
+      --naver: #03c75a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1.25rem 4rem;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; }
+    header {
+      background: linear-gradient(135deg, #8b1538 0%, #5c0f26 100%);
+      color: #fff;
+      border-radius: 16px;
+      padding: 2.2rem 2rem;
+      margin-bottom: 1.75rem;
+    }
+    header .eyebrow { font-size: 0.75rem; letter-spacing: 0.14em; opacity: 0.85; text-transform: uppercase; }
+    header h1 { font-size: 1.75rem; font-weight: 800; margin-top: 0.4rem; letter-spacing: -0.02em; }
+    header p { margin-top: 0.75rem; font-size: 0.95rem; opacity: 0.92; max-width: 40rem; }
+    .badges { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
+    .badge {
+      font-size: 0.72rem; padding: 0.28rem 0.65rem; border-radius: 999px;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+    }
+    .badge a { color: inherit; text-decoration: none; }
+    .badge a:hover { text-decoration: underline; }
+    nav.filter {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    nav.filter a {
+      font-size: 0.82rem; text-decoration: none; color: var(--text);
+      padding: 0.4rem 0.85rem; border-radius: 999px;
+      background: var(--card); border: 1px solid var(--border);
+    }
+    nav.filter a:hover { border-color: var(--accent); color: var(--accent); }
+    section.cat { margin-bottom: 2rem; }
+    section.cat h2 {
+      font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem;
+      padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent);
+      color: var(--accent);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.2s;
+    }
+    .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    .card-img {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      background: #e8eaef;
+    }
+    .card-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card-img .tag {
+      position: absolute; top: 10px; left: 10px;
+      font-size: 0.68rem; font-weight: 700;
+      padding: 0.2rem 0.5rem; border-radius: 4px;
+      background: rgba(0,0,0,0.65); color: #fff;
+    }
+    .card-body { padding: 1.1rem 1.2rem 1.25rem; flex: 1; display: flex; flex-direction: column; }
+    .card-body h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .card-body .one { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.6rem; flex: 1; }
+    .meta { font-size: 0.78rem; color: var(--muted); margin-top: 0.5rem; }
+    .meta span { display: block; margin-bottom: 0.2rem; }
+    .price { font-size: 0.8rem; color: var(--gold); font-weight: 600; margin-top: 0.4rem; }
+    .stars { color: var(--gold); font-size: 0.75rem; margin-bottom: 0.35rem; }
+    .naver-btn {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      margin-top: 0.75rem;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.78rem; font-weight: 700;
+      color: #fff; background: var(--naver);
+      border-radius: 8px; text-decoration: none;
+      width: fit-content;
+    }
+    .naver-btn:hover { filter: brightness(0.95); }
+    .naver-btn svg { width: 14px; height: 14px; fill: currentColor; }
+    .tip-box {
+      background: var(--accent-light);
+      border: 1px solid #f5c6d0;
+      border-radius: 10px;
+      padding: 1rem 1.2rem;
+      font-size: 0.86rem;
+      margin-bottom: 1.75rem;
+    }
+    .tip-box strong { color: var(--accent); }
+    .tip-box a { color: var(--accent); font-weight: 600; }
+    .quick-table {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.75rem;
+      overflow-x: auto;
+    }
+    .quick-table h2 { font-size: 1.05rem; margin-bottom: 0.75rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+    th, td { border: 1px solid var(--border); padding: 0.5rem 0.7rem; text-align: left; }
+    th { background: #f8f9fb; }
+    footer {
+      text-align: center; font-size: 0.76rem; color: var(--muted);
+      margin-top: 2rem; line-height: 1.5;
+    }
+    footer a { color: var(--accent); }
+    .photo-credit {
+      font-size: 0.68rem; color: #9ca3af;
+      padding: 0.35rem 1.2rem 0;
+      border-top: 1px dashed var(--border);
+      margin-top: auto;
+    }
+    .card-note {
+      font-size: 0.78rem;
+      color: #7a4f00;
+      background: #fff8e6;
+      border: 1px solid #f0d78c;
+      border-radius: 8px;
+      padding: 0.55rem 0.7rem;
+      margin-top: 0.55rem;
+      line-height: 1.45;
+    }
+    .card-note strong { color: #9a6700; }
+    .card-img--naver { background: linear-gradient(145deg, #f0f2f5 0%, #e2e6ec 100%); }
+    .photo-panel {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: 100%; height: 100%; min-height: 180px;
+      padding: 1.25rem 1rem; text-align: center; text-decoration: none; color: inherit;
+      transition: background 0.2s;
+    }
+    .photo-panel:hover { background: rgba(3, 199, 90, 0.08); }
+    .photo-panel-menu {
+      font-size: 1rem; font-weight: 800; color: var(--accent);
+      letter-spacing: -0.02em; line-height: 1.35;
+    }
+    .photo-panel-sub {
+      font-size: 0.72rem; color: var(--muted); margin-top: 0.35rem;
+    }
+    .photo-panel-hint {
+      font-size: 0.76rem; color: #4a5568; margin-top: 0.65rem; line-height: 1.4;
+    }
+    .photo-panel-cta {
+      margin-top: 0.75rem; font-size: 0.78rem; font-weight: 700;
+      color: #fff; background: var(--naver);
+      padding: 0.4rem 0.85rem; border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Korea University · Anam</div>
+    <h1>고려대 안암 맛집 추천 리스트</h1>
+    <p>안암역·고려대 캠퍼스 인근 식당만 골랐습니다. 술집·포차는 제외했고, 각 카드에서 네이버 지도로 바로 이동할 수 있습니다.</p>
+    <div class="badges">
+      <span class="badge">안암역 1·2·3번 출구</span>
+      <span class="badge">가성비</span>
+      <span class="badge">혼밥</span>
+      <span class="badge"><a href="https://www.instagram.com/anam_food_dictionary?igsh=MTVwY2tldTA2bzVvNg==" target="_blank" rel="noopener">@anam_food_dictionary</a></span>
+    </div>
+  </header>
+
+  <div class="tip-box">
+    <strong>참고</strong> 목록·메뉴는
+    <a href="https://www.instagram.com/anam_food_dictionary?igsh=MTVwY2tldTA2bzVvNg==" target="_blank" rel="noopener">안암 푸드 사전(@anam_food_dictionary)</a> 인스타와 맞춰 두었습니다.
+    효이당·모이리타·금쪽삼겹·육회바른연어는 <strong>실제 메뉴 사진</strong>이 카드와 다를 수 있어, 네이버 지도 리뷰 사진으로 안내합니다.
+    영업시간·휴무는 카드의 <strong>네이버 지도</strong>에서 당일 확인하세요.
+  </div>
+
+  <nav class="filter">
+    <a href="#korean">한식·국밥</a>
+    <a href="#pasta">파스타·양식</a>
+    <a href="#meat">고기·혼밥</a>
+    <a href="#snack">분식</a>
+    <a href="#world">이색·외국음식</a>
+    <a href="#pick">목적별 추천</a>
+  </nav>
+
+  <!-- 한식 -->
+  <section class="cat" id="korean">
+    <h2>한식 · 국밥 · 찌개</h2>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-img">
+          <img src="images/sundubu.jpg" alt="순두부찌개" loading="lazy" />
+          <span class="tag">아침·점심</span>
+        </div>
+        <div class="card-body">
+          <div class="stars">★★★★☆ · 순두부·제육</div>
+          <h3>옥두헌 손두부</h3>
+          <p class="one">국산 콩 손두부·순두부·뚝제육 정식. 안암역·금쪽삼겹 옆, 아침 7시 30분부터 영업합니다.</p>
+          <p class="price">순두부·제육 정식 약 9,500원~</p>
+          <div class="meta">
+            <span>📍 성북구 개운사길 18 1층 (안암역 도보 약 3분)</span>
+            <span>⏰ 07:30~22:00 · 라스트 21:30</span>
+          </div>
+          <a class="naver-btn" href="https://map.naver.com/p/search/%EC%98%A5%EB%91%90%ED%97%8C%EC%86%90%EB%91%90%EB%B6%80%20%EA%B0%9C%EC%9A%B4%EC%82%AC%EA%B8%B8%2018" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            네이버 지도
+          </a>
+          <p class="photo-credit">사진: 로컬 저장 (대표 메뉴)</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-img">
+          <img src="images/seolleongtang.jpg" alt="설렁탕" loading="lazy" />
+          <span class="tag">한식</span>
+        </div>
+        <div class="card-body">
+          <div class="stars">★★★★☆ · 국물</div>
+          <h3>동우설렁탕</h3>
+          <p class="one">진한 설렁탕으로 오래 단골이 많습니다. 속이 편한 한 끼에 적합합니다.</p>
+          <div class="meta">
+            <span>📍 안암·고대 인근</span>
+          </div>
+          <a class="naver-btn" href="https://map.naver.com/p/search/%EB%8F%99%EC%9A%B0%EC%84%A4%EB%A0%81%ED%83%95%20%EC%95%88%EC%95%94" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            네이버 지도
+          </a>
+          <p class="photo-credit">사진: 로컬 저장 (대표 메뉴)</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 파스타 -->
+  <section class="cat" id="pasta">
+    <h2>파스타 · 양식</h2>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-img card-img--naver">
+          <a class="photo-panel" href="https://map.naver.com/p/search/%ED%9A%A8%EC%9D%B4%EB%8B%B9%20%EA%B3%A0%EB%A8%80%EB%8C%80%EB%A1%9C27%EA%B8%B8" target="_blank" rel="noopener">
+            <span class="photo-panel-menu">풍기 버섯 로제 · 봉골레</span>
+            <span class="photo-panel-sub">효이당 대표 메뉴</span>
+            <span class="photo-panel-hint">실제 플레이팅·양은<br />네이버 지도 리뷰 사진을 확인하세요</span>
+            <span class="photo-panel-cta">네이버에서 사진 보기</span>
+          </a>
+          <span class="tag">혼밥</span>
+        </div>
+        <div class="card-body">
+          <div class="stars">★★★★☆ · 가성비</div>
+          <h3>효이당</h3>
+          <p class="one">고대 정후·안암역 2번 출구 근처 파스타 전문. 만 원대, 혼밥석·2인석. 마레 토마토·봉골레·로제 인기.</p>
+          <p class="price">파스타 약 1만 원대~</p>
+          <div class="meta">
+            <span>📍 성북구 고려대로27길 30-2 (안암역 2번 출구 도보 약 3분)</span>
+            <span>⏰ 월~금 11:30~21:00 · 브레이크 15:00~17:00 · 토·일 휴무</span>
+          </div>
+          <a class="naver-btn" href="https://map.naver.com/p/search/%ED%9A%A8%EC%9D%B4%EB%8B%B9%20%EA%B3%A0%EB%A8%80%EB%8C%80%EB%A1%9C27%EA%B8%B8" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            네이버 지도
+          </a>
+          <p class="photo-credit">사진: 네이버 지도 방문자 리뷰 (메뉴와 동일 사진 권장)</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-img card-img--naver">
+          <a class="photo-panel" href="https://map.naver.com/p/search/%EB%AA%A8%EC%9D%B4%EB%A6%AC%ED%83%80%20%EA%B3%A0%EB%A8%80%EB%8C%80%EB%A1%9C24%EA%B8%B8" target="_blank" rel="noopener">
+            <span class="photo-panel-menu">포르마지오 빠네</span>
+            <span class="photo-panel-sub">모이리타 대표 메뉴</span>
+            <span class="photo-panel-hint">실제 플레이팅·양은<br />네이버 지도 리뷰 사진을 확인하세요</span>
+            <span class="photo-panel-cta">네이버에서 사진 보기</span>
+          </a>
+          <span class="tag">빠네</span>
+        </div>
+        <div class="card-body">
+          <div class="stars">★★★★★ · 빠네·피자</div>
+          <h3>모이리타</h3>
+          <p class="one">참살이길 2층 빠네·스파게티·피자. 포르마지오 빠네가 대표입니다.</p>
+          <p class="card-note"><strong>⚠️ 방문 전 참고</strong> 음식 나오는 데 시간이 꽤 걸릴 수 있습니다. 네이버에 적힌 영업 마감보다 더 일찍 문을 닫는 경우도 있으니, 가기 전에 전화·네이버 지도로 한 번 더 확인하세요.</p>
+          <p class="price">빠네·파스타 약 1.3만~1.9만 원</p>
+          <div class="meta">
+            <span>📍 성북구 고려대로24길 20 2층 (안암역 1번 출구 참살이길)</span>
+            <span>⏰ 월~목 10:30~19:20 (14:00~16:30 브레이크) · 금·일 10:30~14:30 · 토 휴무</span>
+            <span>☎ 02-922-2292</span>
+          </div>
+          <a class="naver-btn" href="https://map.naver.com/p/search/%EB%AA%A8%EC%9D%B4%EB%A6%AC%ED%83%80%20%EA%B3%A0%EB%A8%80%EB%8C%80%EB%A1%9C24%EA%B8%B8" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            네이버 지도
+          </a>
+          <p class="photo-credit">사진: 네이버 지도 방문자 리뷰 (메뉴와 동일 사진 권장)</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 고기 혼밥 -->
+  <section class="cat" id="meat">
+    <h2>가성비 · 혼밥 · 고기</h2>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-img card-img--naver">
+          <a class="photo-panel" href="https://map.naver.com/p/search/%EA%B8%88%EC%A2%9D%EC%82%BC%EA%B2%B9%20%EA%B3%A0%EB%8C%80%EB%B3%B8%EC%A0%90" target="_blank" rel="noopener">
+            <span class="photo-panel-menu">직화 고기 세트 + 냉면</span>
+            <span class="photo-panel-sub">금쪽삼겹 고대본점</span>
+            <span class="photo-panel-hint">실제 플레이팅·양은<br />네이버 지도 리뷰 사진을 확인하세요</span>
+            <span class="photo-panel-cta">네이버에서 사진 보기</span>
+          </a>
+          <span class="tag">혼밥 1위</span>
+        </div>
+        <div class="card-body">
+          <div class="stars">★★★★★ · 가성비</div>
+          <h3>금쪽삼겹 고대본점</h3>
+          <p class="one">직화로 구워 나오는 고기 세트. 1인석·키오스크 주문으로 혼밥·점심에 최적입니다.</p>
+          <p class="price">세트 9,900~11,900원 · 냉면 약 8,000원</p>
+          <div class="meta">
+            <span>📍 성북구 개운사길 21-3 (안암역 1번 출구 도보 1~2분)</span>
+            <span>⏰ 월~토 11:00~22:00 (15~17시 브레이크) · 일 휴무</span>
+          </div>
+          <a class="naver-btn" href="https://map.naver.com/p/search/%EA%B8%88%EC%A2%9D%EC%82%BC%EA%B2%B9%20%EA%B3%A0%EB%8C%80%EB%B3%B8%EC%A0%90" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            네이버 지도
+          </a>
+          <p class="photo-credit">사진: 네이버 지도 방문자 리뷰 (메뉴와 동일 사진 권장)</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-img card-img--naver">
+          <a class="photo-panel" href="https://map.naver.com/p/search/%EC%9C%A1%ED%9A%8C%EB%B0%94%EB%A5%B8%EC%97%B0%EC%96%B4%20%EA%B3%A0%EB%8C%80%EC%95%88%EC%95%94%EC%A0%90" target="_blank" rel="noopener">
+            <span class="photo-panel-menu">연어덮밥 · 육연덮밥</span>
+            <span class="photo-panel-sub">육회바른연어 고대안암점</span>
+            <span class="photo-panel-hint">실제 플레이팅·양은<br />네이버 지도 리뷰 사진을 확인하세요</span>
+            <span class="photo-panel-cta">네이버에서 사진 보기</span>
+          </a>
+          <span class="tag">담백</span>
+        </div>
+        <div class="card-body">
+          <div class="stars">★★★★☆ · 혼밥</div>
+          <h3>육회바른연어 고대안암점</h3>
+          <p class="one">육회·연어·덮밥·초밥. 가볍고 깔끔한 한 끼에 좋습니다.</p>
+          <p class="price">연어초밥 10P 약 12,900원 · 덮밥 약 8,900원</p>
+          <div class="meta">
+            <span>📍 성북구 고려대로24길 55 1층</span>
+          </div>
+          <a class="naver-btn" href="https://map.naver.com/p/search/%EC%9C%A1%ED%9A%8C%EB%B0%94%EB%A5%B8%EC%97%B0%EC%96%B4%20%EA%B3%A0%EB%8C%80%EC%95%88%EC%95%94%EC%A0%90" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            네이버 지도
+          </a>
+          <p class="photo-credit">사진: 네이버 지도 방문자 리뷰 (메뉴와 동일 사진 권장)</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 분식 -->
+  <section class="cat" id="snack">
+    <h2>분식 · 간단히</h2>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-img">
+          <img src="images/kimbap.jpg" alt="김밥" loading="lazy" />
+          <span class="tag">가성비</span>
+        </div>
+        <div class="card-body">
+          <div class="stars">★★★★☆ · 분식</div>
+          <h3>고른햇살</h3>
+          <p class="one">치즈 라볶이·뚱뚱이(참치) 김밥이 인기. 안암역 바로 근처 분식 전문점입니다.</p>
+          <div class="meta">
+            <span>📍 안암역 인근</span>
+          </div>
+          <a class="naver-btn" href="https://map.naver.com/p/search/%EA%B3%A0%EB%A5%B8%ED%96%87%EC%82%B4%20%EC%95%88%EC%95%94" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            네이버 지도
+          </a>
+          <p class="photo-credit">사진: 로컬 저장 (대표 메뉴)</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-img">
+          <img src="images/kimbap.jpg" alt="참치김밥" loading="lazy" />
+          <span class="tag">김밥</span>
+        </div>
+        <div class="card-body">
+          <div class="stars">★★★★☆</div>
+          <h3>이공김밥</h3>
+          <p class="one">참치김밥으로 유명합니다. 가볍게 한 끼 하기 좋습니다.</p>
+          <div class="meta">
+            <span>📍 고려대·안암 인근</span>
+          </div>
+          <a class="naver-btn" href="https://map.naver.com/p/search/%EC%9D%B4%EA%B3%B5%EA%B9%80%EB%B0%A5%20%EC%95%88%EC%95%94" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            네이버 지도
+          </a>
+          <p class="photo-credit">사진: 로컬 저장 (대표 메뉴)</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-img">
+          <img src="images/tteokbokki.jpg" alt="떡볶이" loading="lazy" />
+          <span class="tag">떡볶이</span>
+        </div>
+        <div class="card-body">
+          <div class="stars">★★★★☆</div>
+          <h3>유자유김치떡볶이 본점</h3>
+          <p class="one">김치 떡볶이로 이색 분식. 매콤한 맛을 찾을 때 추천합니다.</p>
+          <div class="meta">
+            <span>📍 안암·고대 인근</span>
+          </div>
+          <a class="naver-btn" href="https://map.naver.com/p/search/%EC%9C%A0%EC%9E%90%EC%9C%A0%EA%B9%80%EC%B9%98%EB%96%A1%EB%B3%B6%EC%9D%B4%20%EC%95%88%EC%95%94" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            네이버 지도
+          </a>
+          <p class="photo-credit">사진: 로컬 저장 (대표 메뉴)</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 이색 -->
+  <section class="cat" id="world">
+    <h2>이색 · 외국음식</h2>
+    <div class="grid">
+
+      <article class="card">
+        <div class="card-img">
+          <img src="images/pho.jpg" alt="쌀국수" loading="lazy" />
+          <span class="tag">베트남</span>
+        </div>
+        <div class="card-body">
+          <div class="stars">★★★★☆</div>
+          <h3>근처식당</h3>
+          <p class="one">쌀국수가 맛있기로 유명합니다. 따뜻한 국물 한 그릇에 좋습니다.</p>
+          <div class="meta">
+            <span>📍 안암·고대 인근</span>
+          </div>
+          <a class="naver-btn" href="https://map.naver.com/p/search/%EA%B7%BC%EC%B2%98%EC%8B%9D%EB%8B%B9%20%EC%95%88%EC%95%94" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            네이버 지도
+          </a>
+          <p class="photo-credit">사진: 로컬 저장 (대표 메뉴)</p>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-img">
+          <img src="images/burger.jpg" alt="버거" loading="lazy" />
+          <span class="tag">버거</span>
+        </div>
+        <div class="card-body">
+          <div class="stars">★★★★☆</div>
+          <h3>영철버거</h3>
+          <p class="one">수제 버거 전문. 가볍게 점심·저녁에 좋습니다.</p>
+          <div class="meta">
+            <span>📍 안암·고대 인근</span>
+          </div>
+          <a class="naver-btn" href="https://map.naver.com/p/search/%EC%98%81%EC%B2%A0%EB%B2%84%EA%B1%B0%20%EC%95%88%EC%95%94" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>
+            네이버 지도
+          </a>
+          <p class="photo-credit">사진: 로컬 저장 (대표 메뉴)</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- 목적별 -->
+  <div class="quick-table" id="pick">
+    <h2>목적별 한눈에 고르기</h2>
+    <table>
+      <thead>
+        <tr><th>상황</th><th>추천</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>혼밥·점심·가성비</td><td>금쪽삼겹, 효이당, 육회바른연어, 고른햇살</td></tr>
+        <tr><td>아침·국물·든든</td><td>옥두헌 손두부, 동우설렁탕</td></tr>
+        <tr><td>파스타·빠네</td><td>효이당, 모이리타</td></tr>
+        <tr><td>가볍게·분식</td><td>이공김밥, 고른햇살, 유자유김치떡볶이</td></tr>
+        <tr><td>다른 맛</td><td>근처식당, 영철버거</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    고려대 안암 맛집 리스트 · 2026년 6월 · 술집·포차 제외<br />
+    참고: <a href="https://www.instagram.com/anam_food_dictionary?igsh=MTVwY2tldTA2bzVvNg==" target="_blank" rel="noopener">@anam_food_dictionary</a> ·
+    음식 사진: <code>outputs/images/</code> 폴더에 저장 (오프라인·로컬 열기용) ·
+    매장 사진: 각 카드 <strong>네이버 지도</strong> 리뷰<br />
+    파일: anam-restaurants.html
+  </footer>
+
+</div>
+</body>
+</html>
